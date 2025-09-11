@@ -17,6 +17,7 @@ extern "C" {
 #include <swgp.h>
 #include "ssd1306_conf.h"
 
+#if 0
 #if defined(STM32F0)
 #include "stm32f0xx_hal.h"
 #elif defined(STM32F1)
@@ -45,6 +46,7 @@ extern "C" {
 //#else
 //#error "SSD1306 library was tested only on STM32F0, STM32F1, STM32F3, STM32F4, STM32F7, STM32L0, STM32L1, STM32L4, STM32H7, STM32G0, STM32G4 MCU families. Please modify ssd1306.h if you know what you are doing. Also please send a pull request if it turns out the library works on other MCU's as well!"
 #endif
+#endif
 
 #ifdef SSD1306_X_OFFSET
 #define SSD1306_X_OFFSET_LOWER (SSD1306_X_OFFSET & 0x0F)
@@ -71,11 +73,6 @@ extern "C" {
 /* ^^^ I2C config ^^^ */
 /* vvv SPI config vvv */
 /* ^^^ SPI config ^^^ */
-
-#ifdef _M_AMD64
-typedef void* I2C_HandleTypeDef;
-typedef void* SPI_HandleTypeDef;
-#endif
 
 #include <swgp.h>
 #include <swi2c.h>
@@ -154,7 +151,7 @@ void SH1106_Init(SSD1306_t *d, void *pvport);
 void ssd1306_fill(lcddev_t *d, uint8_t color);
 void ssd1306_update(lcddev_t *p);
 
-void ssd1306_pixeldraw(fontdraw_t *d, uint32_t x, uint32_t y, int color);
+void ssd1306_pixeldraw(fontdraw_t *d, uint16_t x, uint16_t y, uint8_t color);
 
 /**
  * @brief Sets the contrast of the display.

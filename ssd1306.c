@@ -256,7 +256,7 @@ void ssd1306_update(lcddev_t *d) {
     }
 }
 
-void ssd1306_pixeldraw(fontdraw_t *d, uint32_t x, uint32_t y, int color) {
+void ssd1306_pixeldraw(fontdraw_t *d, uint16_t x, uint16_t y, uint8_t color) {
     int oy = (y & d->posmask);
         y &= ~(d->posmask);
 
