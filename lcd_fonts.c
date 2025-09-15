@@ -662,7 +662,7 @@ FontDef Font_11x18 = {11, 18, 32, 127, FONT_FLAG_WPTR, 0, 3, 0xe00, (1<<15), Fon
 FontDef Font_12x24 = {12, 24, 32, 127, FONT_FLAG_WPTR, 0, 4, 0x380, (1<<11), (const uint16_t*)Font12x24};
 #endif
 #ifdef LCDFONT_INCLUDE_FONT_12x16N
-FontDef Font_12x16N = {12, 16, 46, 58, FONT_FLAG_WPTR, 0, 4, 0x380, (1<<11), (const uint16_t*)Font12x16N};
+FontDef Font_12x16N = {12, 16, 46, 58, FONT_FLAG_WPTR, 0, 4, 0x3c0, (1<<11), (const uint16_t*)Font12x16N};
 #endif
 #ifdef LCDFONT_INCLUDE_FONT_16x24N
 FontDef Font_16x24N = {16, 24, 46, 58, FONT_FLAG_WPTR, 0, 4, 0x1c, (1<<15), (const uint16_t*)font16x24N};
