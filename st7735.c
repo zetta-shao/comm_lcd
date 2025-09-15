@@ -80,21 +80,25 @@ void st7735_update(lcddev_t *d) {
 }
 
 void st7735_update_window(st7735_t *q, uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
-    int i, j, k, m, l, n;
+    int i, j, m, l;
     uint8_t *px, pt;
     uint16_t clrf, clrb;
-    st7735_window(q, x, y, x+w-1, y+h-1);
+
     px = q->d.pFrameBuf;
-    n = q->d.frameWidth;
     px += y * q->d.oneLineOffsetSize;
-    clrf = q->d.colorf; clrb = q->d.colorb;
-    px += (x >> 3);
+    clrf = q->d.colorf;
+    l = (x >> 3);
+    clrb = q->d.colorb;
+    m = 1 << (x & 7);
+    st7735_window(q, x, y, x+w-1, y+h-1);
     for(i=0; i<h; i++, px+=q->d.oneLineOffsetSize) {
-        for(j=0, l=0; j<w; l++) {
+        for(j=0; j<w; l++) {
             pt = px[l];
-            for(m=1; m<129 && j<w; m<<=1, j++) {
-                if(pt & m) st7735_write16(q, clrf);
-                else st7735_write16(q, clrb); } } }
+            for(; m<129 && j<w; m<<=1, j++) {
+                if(pt & m) { st7735_write16(q, clrf); }
+                else { st7735_write16(q, clrb); } }
+            m = 1;
+        } l = (x >> 3); m = 1 << (x & 7); }
 }
 
 
@@ -205,6 +209,26 @@ void st7735_write16(st7735_t *d, uint16_t val) { uint8_t *p=(uint8_t*)&val;
     swgp_gpo(d->cs, 0); swspi_write(d->dev, p+1, 1); swspi_write(d->dev, p, 1); swgp_gpo(d->cs, 1);
 }
 
+void st7735_reset(st7735_t *d) {
+    swgp_gpo(d->cs, 0);
+    swgp_gpo(d->rst, 0);
+    swgp_delay_ms(100);
+    swgp_gpo(d->rst, 1);
+    swgp_delay_ms(100);
+    swgp_gpo(d->cs, 1);
+}
+
+void st7735_set_idle(st7735_t *d, uint8_t val) {
+    if(!d) return;
+    if(val) {
+        d->d.flags |= FONTDRAW_IDLE;
+        swgp_gpo(d->blk, 1);
+    } else {
+        d->d.flags &= ~FONTDRAW_IDLE;
+        swgp_gpo(d->blk, 0);
+    }
+}
+
 void st7735_init(st7735_t *d, uint16_t width, uint16_t height, void *pvport, void *pvFontDef) {
     d->dev = pvport;
     d->d.parent = d;
@@ -227,10 +251,7 @@ void st7735_init(st7735_t *d, uint16_t width, uint16_t height, void *pvport, voi
     d->d.pixeldraw = &st7735_pixeldraw;
     d->d.update = &st7735_update;
     swgp_gpo(d->blk, 1);
-    swgp_gpo(d->rst, 0);
-    swgp_delay_ms(100);
-    swgp_gpo(d->rst, 1);
-    swgp_delay_ms(100);
+    st7735_reset(d);
     swgp_gpo(d->blk, 0);
     swgp_gpo(d->dc, 1);
 

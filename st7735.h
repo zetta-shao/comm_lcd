@@ -42,6 +42,7 @@ void st7735_write16(st7735_t *d, uint16_t val);
 void st7735_w_reg(st7735_t *d, uint8_t val);
 void st7735_window(st7735_t *d, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 void st7735_init(st7735_t *d, uint16_t width, uint16_t height, void *pvport, void *pvFontDef);
+void st7735_reset(st7735_t *d);
 
 void st7735_fill(st7735_t *d, uint16_t xsta, uint16_t ysta, uint16_t xend, uint16_t yend, uint16_t color);
 void st7735_drawPoint(st7735_t *d, uint16_t x, uint16_t y, uint16_t color);
@@ -54,6 +55,8 @@ void st7735_setcolor(st7735_t *d, uint16_t color_front, uint16_t color_back);
 
 void st7735_pixeldraw(lcddev_t *d, uint16_t x, uint16_t y, uint8_t color);
 void st7735_update_window(st7735_t *q, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
+
+void st7735_set_idle(st7735_t *d, uint8_t val);
 
 void LCD_Fill(uint16_t xsta,uint16_t ysta,uint16_t xend,uint16_t yend,uint16_t color);//ָ�����������ɫ
 void LCD_DrawPoint(uint16_t x,uint16_t y,uint16_t color);//��ָ��λ�û�һ����
@@ -68,6 +71,7 @@ void LCD_ShowFloatNum1(uint16_t x,uint16_t y,float num,uint8_t len,uint16_t fc,u
 
 void LCD_ShowPicture(uint16_t x,uint16_t y,uint16_t length,uint16_t width,const uint8_t pic[]);//��ʾͼƬ
 
+#define clr16(r,g,b) ((r<<11)|(g<<5)|b)
 
 //������ɫ
 #define WHITE         	 0xFFFF

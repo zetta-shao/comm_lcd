@@ -36,9 +36,11 @@ extern FontDef Font_5x7; //5x7 no padding
 extern FontDef Font_6x8;
 extern FontDef Font_6x12;
 extern FontDef Font_7x10;
+extern FontDef Font_8x8;
 extern FontDef Font_8x16;
 //fonts.c
 extern FontDef Font_11x18;
+extern FontDef Font_16x24N;
 extern FontDef Font_16x21N;
 extern FontDef Font_16x26;
 extern FontDef Font_16x24;

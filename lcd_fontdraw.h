@@ -17,6 +17,7 @@ extern "C" {
 #define FONTDRAW_STRVERTICAL    0x100
 #define FONTDRAW_BIT8           0x200
 #define FONTDRAW_BIT16          0x400
+#define FONTDRAW_IDLE           0x800
 
 typedef struct fontdraw_t fontdraw_t;
 typedef struct fontdraw_t lcddev_t;
