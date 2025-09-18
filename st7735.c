@@ -60,6 +60,7 @@ void st7735_pixeldraw(lcddev_t *d, uint16_t x, uint16_t y, uint8_t color) {
 }
 
 void st7735_update(lcddev_t *d) {
+    if(d->flags & FONTDRAW_IDLE) return;
 #ifdef __AMD64
     (void)d;
 #else
@@ -84,6 +85,7 @@ void st7735_update_window(st7735_t *q, uint16_t x, uint16_t y, uint16_t w, uint1
     uint8_t *px, pt;
     uint16_t clrf, clrb;
 
+    if(q->d.flags & FONTDRAW_IDLE) return;
     px = q->d.pFrameBuf;
     px += y * q->d.oneLineOffsetSize;
     clrf = q->d.colorf;
