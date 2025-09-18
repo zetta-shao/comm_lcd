@@ -4,7 +4,8 @@
 extern "C" {
 #endif
 #include <stdint.h>
-#include <string.h>
+#include <stddef.h>
+//#include <string.h>
 //#include "lcd_fonts.h"
 
 #define FONTDRAW_WIDTHMUL       0x01
@@ -22,6 +23,7 @@ extern "C" {
 typedef struct fontdraw_t fontdraw_t;
 typedef struct fontdraw_t lcddev_t;
 typedef struct pos_t pos_t;
+typedef struct FontDef FontDef;
 
 typedef int8_t (*__strfmt)(int16_t, char*);
 typedef void (*__update_screen)(lcddev_t*);
@@ -77,16 +79,18 @@ int8_t str_3digitU(int32_t val, char *outstr, char *unit);
 //int8_t str_4digit(int16_t val, char *outstr);
 int8_t str_4digitL(int32_t val, char *outstr); //4+1
 int8_t str_4digitU(int32_t val, char *outstr, char *unit);
-//int8_t str_5digit(int16_t val, char *outstr);
+int8_t str_5digitL(int32_t val, char *outstr); //5+1
+int8_t str_5digitU(int32_t val, char *outstr, char *unit);
+int8_t str_NdigitU(int32_t val, int8_t nDigits, char *outstr, char *unit);
 
 uint8_t fontdraw_getpow(uint8_t val);
 char fontdraw_char(fontdraw_t *d, uint8_t ch);
 char fontdraw_charC(fontdraw_t *d, uint8_t ch, int8_t color);
-char fontdraw_charFont(fontdraw_t *d, uint8_t ch, int8_t color, void *pvFontDef);
+char fontdraw_charFont(fontdraw_t *d, uint8_t ch, int8_t color, const FontDef *font);
 void fontdraw_drawpixelBW(fontdraw_t *d, uint32_t x, uint32_t y, int8_t color);
 void fontdraw_string(fontdraw_t *d, char *s);
 void fontdraw_stringC(fontdraw_t *d, char *s,  int8_t color);
-void fontdraw_stringFont(fontdraw_t *d, char *s, int8_t color, void *pvFontDef);
+void fontdraw_stringFont(fontdraw_t *d, char *s, int8_t color, const FontDef *font);
 void fontdraw_setpos(fontdraw_t *d, uint32_t x, uint32_t y);
 void fontdraw_setColor(fontdraw_t *d, int colorf, int colorb);
 void fontdraw_fill(fontdraw_t *d, int8_t color);
