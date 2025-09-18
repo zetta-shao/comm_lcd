@@ -32,21 +32,23 @@ struct FontDef {
 #endif
 
 //font8.c
-extern FontDef Font_5x7; //5x7 no padding
-extern FontDef Font_6x8;
-extern FontDef Font_6x12;
-extern FontDef Font_7x10;
-extern FontDef Font_8x8;
-extern FontDef Font_8x16;
+extern const FontDef Font_5x7; //5x7 no padding
+extern const FontDef Font_6x8;
+extern const FontDef Font_6x12;
+extern const FontDef Font_7x10;
+extern const FontDef Font_8x8;
+extern const FontDef Font_8x12N;
+extern const FontDef Font_8x16;
 //fonts.c
-extern FontDef Font_11x18;
-extern FontDef Font_16x24N;
-extern FontDef Font_16x21N;
-extern FontDef Font_16x26;
-extern FontDef Font_16x24;
-extern FontDef Font_12x16N;
-extern FontDef Font_12x24;
-extern FontDef Font_16x32;
+extern const FontDef Font_11x18;
+extern const FontDef Font_16x24N;
+extern const FontDef Font_16x21N;
+extern const FontDef Font_16x26;
+extern const FontDef Font_16x24;
+extern const FontDef Font_12x16N;
+extern const FontDef Font_12x16AVW;
+extern const FontDef Font_12x24;
+extern const FontDef Font_16x32;
 
 #ifdef LCDFONT_INCLUDE_FONT_6x8
 #define ICO_NUMBER_DOT 1 //total 10
