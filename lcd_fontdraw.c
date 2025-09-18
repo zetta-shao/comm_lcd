@@ -1,6 +1,6 @@
 #include "lcd_fontdraw.h"
 #include "lcd_fonts.h"
-#include <stdio.h>
+//#include <stdio.h>
 #if _aryfont_
 dotfont_t aryfont[] = {
 #ifdef LCDFONT_INCLUDE_FONT_5x7
@@ -71,7 +71,7 @@ void fontdraw_drawpixelBW(fontdraw_t *d, uint32_t x, uint32_t y, int8_t color) {
 }
 
 
-char fontdraw_dot_Font(fontdraw_t *d, int8_t color, struct FontDef *font) {
+char fontdraw_dot_Font(fontdraw_t *d, int8_t color, const FontDef *font) {
     int i, j, posx=d->curX, posy=d->curY, mask=0, ch = '.';
     mask = font->dotmask;
 
@@ -80,34 +80,31 @@ char fontdraw_dot_Font(fontdraw_t *d, int8_t color, struct FontDef *font) {
     if(font->flags & FONT_FLAG_VERT) { ch *= font->FontWidth; }
     else { ch *= font->FontHeight; }
     if(font->flags & FONT_FLAG_WPTR) {
-        uint16_t t, m, *px = ch + (uint16_t*)font->data;
+        uint16_t t, m, n, *px = ch + (uint16_t*)font->data;
         if(font->flags & FONT_FLAG_VERT) {
-            for(i=0; i<font->FontWidth; i++, posx++) {
-                //if(! px[i]) continue;
-                for(m=font->mask,j=posy,t=px[i]; m!=0; m>>=1) {
+            for(i=0, n=0x8000; n!=0 && i<font->dotwidth; n>>=1) {
+                if(! (n&mask) ) continue;
+                for(m=font->mask,j=posy,t=px[i]; m!=0; m>>=1, i++) {
                     if(! (m & mask)) continue;
                     d->pixeldraw(d, posx, j++, (t & m) ? color : !color);
-                } }
+                } posx++; }
         } else {
             for(i=0; i<font->FontHeight; i++, posy++) {
-                //if(! px[i]) continue;
                 for(m=font->mask,j=posx,t=px[i]; m!=0; m>>=1) {
                     if(! (m & mask)) continue;
                     d->pixeldraw(d, j++, posy, (t & m) ? color : !color);
                 } }
         }
     } else {
-        uint8_t t, m, *px = ch + (uint8_t*)font->data;
+        uint8_t t, m, n, *px = ch + (uint8_t*)font->data;
         if(font->flags & FONT_FLAG_VERT) {
-            for(i = 0; i < font->FontWidth; i++, posx++) {
-                //if(! px[i]) continue;
+            for(i=0, n=0x80; n!=0 && i<font->FontWidth; n>>=1, i++) {
+                if(! (n&mask)) continue;
                 for(m=font->mask,j=posy,t=px[i]; m!=0; m>>=1) {
-                    if(! (m & mask)) continue;
                     d->pixeldraw(d, posx, j++, (t & m) ? color : !color);
-                } }
+                } posx++; }
         } else {
             for(i=0; i<font->FontHeight; i++, posy++) {
-                //if(! px[i]) continue;
                 for(m=font->mask,j=posx,t=px[i]; m!=0; m>>=1) {
                     if(! (m & mask)) continue;
                     d->pixeldraw(d, j++, posy, (t & m) ? color : !color);
@@ -121,15 +118,15 @@ char fontdraw_dot_Font(fontdraw_t *d, int8_t color, struct FontDef *font) {
 }
 
 //char fontdraw_char(fontdraw_t *d, void *pFontDef, int posx, int posy, uint8_t ch, int color) {
-char fontdraw_charFont(fontdraw_t *d, uint8_t ch, int8_t color, void *pvFontDef) {
+char fontdraw_charFont(fontdraw_t *d, uint8_t ch, int8_t color, const FontDef *font) {
     int i, j, posx=d->curX, posy=d->curY, chr = ch;
 
-    FontDef *font = (FontDef*)pvFontDef;
+    //FontDef *font = (FontDef*)pvFontDef;
     if(ch == 0) return 0;
     if(ch < font->index_star || ch > font->index_end) return 0;
     if( d->frameWidth < (posx + font->FontWidth) ||
         d->frameHeight < (posy + font->FontHeight)) { return 0; }
-    if(ch == '.') return fontdraw_dot_Font(d, color, pvFontDef);
+    if(ch == '.') return fontdraw_dot_Font(d, color, font);
 
     //if(font->flags & FONT_FLAG_BTAB) { chr -= 1; } else { chr -= 32; }
     chr -= font->index_star;
@@ -178,7 +175,7 @@ void fontdraw_stringC(fontdraw_t *d, char *s, int8_t color) {
     while(*s) { fontdraw_charFont(d, *s, color, d->pFont); s++; }
 }
 
-void fontdraw_stringFont(fontdraw_t *d, char *s, int8_t color, void *pvFontDef) {
+void fontdraw_stringFont(fontdraw_t *d, char *s, int8_t color, const FontDef *pvFontDef) {
     while(*s) { fontdraw_charFont(d, *s, color, pvFontDef); s++; }
 }
 
@@ -194,6 +191,50 @@ void fontdraw_fill(fontdraw_t *d, int8_t color) {
 
 void fontdraw_set_string_dir(fontdraw_t *d, int vert) { if(vert) d->flags|=FONTDRAW_STRVERTICAL; else d->flags &= ~FONTDRAW_STRVERTICAL; }
 
+int8_t str_NdigitU(int32_t val, int8_t nDigits, char *outstr, char *unit) { //N+1
+    const int adev[] = { 10000, 100000, 1000000, 10000000, 100000000 };
+    int8_t res = (val < 0) ? 0 : 1;
+    int di;
+    char *pS=unit, *pT = outstr;
+    int l, v, pdev;
+    if(nDigits > 5) nDigits = 5;
+    if(nDigits < 2) nDigits = 2;
+    di = nDigits - 2;
+
+    pdev = adev[di + 1]; v=0;
+    if(val >= pdev) {
+        for(l=0; l<nDigits; l++, pT++) *pT = '9';
+        *(pT++)=0; return res;
+    }
+    pdev = adev[di];
+
+    while(1) {
+        for(; v<=nDigits && pdev>=1000; pdev/=10) {
+            l = val / pdev;
+            if(pdev >= 1000 && !l) { continue; }
+            l %= 10; v++;
+            *(pT++) = (char)(l + 48);
+            if(v > nDigits) break;
+        }
+        if(v >= nDigits) { *pT=0; break; }
+        *(pT++) = '.'; v++;
+
+        for(; v<=nDigits && pdev!=0; pdev/=10) {
+            l = val / pdev;
+            l %= 10; v++;
+            *(pT++) = (char)(l + 48);
+            if(v > nDigits) break;
+        }
+
+        for(; v<=nDigits; v++) { *(pT++) = '0'; }
+        break;
+    }
+    if(unit) { for(pS=unit; *pS; pT++, pS++) *pT = *pS; }
+    *pT = 0;
+    return res;
+}
+
+#if 0
 int8_t str_3digitL(int32_t val, char *outstr) { //3+1
     int8_t res = (val < 0) ? 0 : 1;
     val = (val > 0) ? val : -val;
@@ -218,6 +259,7 @@ int8_t str_3digitU(int32_t val, char *outstr, char *unit) {
 
 int8_t str_4digitL(int32_t val, char *outstr) { //4+1
     int8_t res = (val < 0) ? 0 : 1;
+#if 0
     if(val < 1000) {
         sprintf(outstr, ".%03ld0", val);
     } else if(val < 10000) {
@@ -230,6 +272,27 @@ int8_t str_4digitL(int32_t val, char *outstr) { //4+1
         sprintf(outstr, "%4ld.", (val/1000)%10000);
     }
     outstr[5] = 0;
+#else
+    char *pT = outstr; int l, v, pdev = 1000000;
+    for(l=0, v=0; l<=4 && pdev>100; l++, pdev/=10) {
+        l = val / pdev;
+        if(pdev >= 1000 && !l) { continue; }
+        l %= 10; v++;
+        *(pT++) = (char)(l + 48);
+        if(v > 4) break;
+    }
+    if(v >= 4) { *pT=0; return res; }
+    *(pT++) = '.'; v++;
+    for(; v<=4 && pdev != 0; l++, pdev/=10) {
+        l = val / pdev;
+        l %= 10; v++;
+        *(pT++) = (char)(l + 48);
+        if(v > 4) break;
+    }
+    for(; v<=4; v++) { *(pT++) = '0'; }
+    *pT = 0;
+    return res;
+#endif
     return res;
 }
 
@@ -254,6 +317,14 @@ int8_t str_5digit(int16_t val, char *outstr) {
 #endif
     return res;
 }
+#endif
+
+int8_t str_3digitL(int32_t val, char *outstr) { return str_NdigitU(val, 3, outstr, NULL); }
+int8_t str_3digitU(int32_t val, char *outstr, char *unit) { return str_NdigitU(val, 3, outstr, unit); }
+int8_t str_4digitL(int32_t val, char *outstr) { return str_NdigitU(val, 4, outstr, NULL); }
+int8_t str_4digitU(int32_t val, char *outstr, char *unit) { return str_NdigitU(val, 4, outstr, unit); }
+int8_t str_5digitL(int32_t val, char *outstr) { return str_NdigitU(val, 5, outstr, NULL); }
+int8_t str_5digitU(int32_t val, char *outstr, char *unit) { return str_NdigitU(val, 5, outstr, unit); }
 
 typedef int8_t (*__strfmt)(int16_t, char*);
 #ifdef _aryfont_
