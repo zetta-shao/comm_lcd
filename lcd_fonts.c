@@ -538,6 +538,13 @@ static const uint16_t Font12x16N [] = {
 };
 #endif
 
+#ifdef LCDFONT_INCLUDE_FONT_12x16AVW
+const unsigned short font12x16AVW [] = {
+    0x0060,0x0060,0x00a0,0x00b0,0x0090,0x0090,0x0110,0x0118,0x0108,0x01f8,0x020c,0x020c,0x0204,0x0404,0x0406,0x0f0f, /*A*/
+    0x0f0e,0x0604,0x0208,0x0208,0x0308,0x0308,0x0110,0x0110,0x0190,0x0190,0x00a0,0x00a0,0x00e0,0x00c0,0x0040,0x0040, /*V*/
+    0x0ef7,0x0462,0x0422,0x0622,0x0622,0x0264,0x0264,0x0274,0x0274,0x0394,0x0398,0x0198,0x0198,0x0118,0x0110,0x0110, /*W*/ };
+#endif
+
 #ifdef LCDFONT_INCLUDE_FONT_16x32
 static const uint16_t Font16x32 [] = {
 0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000, /* */
@@ -656,27 +663,30 @@ static const uint16_t font16x24N [] = {
 #endif
 
 #ifdef LCDFONT_INCLUDE_FONT_11x18
-FontDef Font_11x18 = {11, 18, 32, 127, FONT_FLAG_WPTR, 0, 3, 0xe00, (1<<15), Font11x18};
+const FontDef Font_11x18 = {11, 18, 32, 127, FONT_FLAG_WPTR, 0, 3, 0xe00, (1<<15), Font11x18};
 #endif
 #ifdef LCDFONT_INCLUDE_FONT_12x24
-FontDef Font_12x24 = {12, 24, 32, 127, FONT_FLAG_WPTR, 0, 4, 0x380, (1<<11), (const uint16_t*)Font12x24};
+const FontDef Font_12x24 = {12, 24, 32, 127, FONT_FLAG_WPTR, 0, 4, 0x380, (1<<11), (const uint16_t*)Font12x24};
 #endif
 #ifdef LCDFONT_INCLUDE_FONT_12x16N
-FontDef Font_12x16N = {12, 16, 46, 58, FONT_FLAG_WPTR, 0, 4, 0x3c0, (1<<11), (const uint16_t*)Font12x16N};
+const FontDef Font_12x16N = {12, 16, 46, 58, FONT_FLAG_WPTR, 0, 4, 0x3c0, (1<<11), (const uint16_t*)Font12x16N};
+#endif
+#ifdef LCDFONT_INCLUDE_FONT_12x16AVW
+const FontDef Font_12x16AVW = {12, 16, 'U', 'W', FONT_FLAG_WPTR, 0, 4, 0x380, (1<<11), (const uint16_t*)font12x16AVW};
 #endif
 #ifdef LCDFONT_INCLUDE_FONT_16x24N
-FontDef Font_16x24N = {16, 24, 46, 58, FONT_FLAG_WPTR, 0, 4, 0x1c, (1<<15), (const uint16_t*)font16x24N};
+const FontDef Font_16x24N = {16, 24, 46, 58, FONT_FLAG_WPTR, 0, 4, 0x1c, (1<<15), (const uint16_t*)font16x24N};
 #endif
 /* see ./examples/custom-fonts/ */
 #ifdef LCDFONT_INCLUDE_FONT_16x24
-FontDef Font_16x24 = {16, 24, 32, 127, FONT_FLAG_WPTR, 0, 7, 0x3f8, (1<<15), Font16x24};
+const FontDef Font_16x24 = {16, 24, 32, 127, FONT_FLAG_WPTR, 0, 7, 0x3f8, (1<<15), Font16x24};
 #endif
 #ifdef LCDFONT_INCLUDE_FONT_16x21N
-FontDef Font_16x21N = {16, 21, 46, 58, FONT_FLAG_WPTR, 0, 7, 0x3f8, (1<<15), Font16x21N};
+const FontDef Font_16x21N = {16, 21, 46, 58, FONT_FLAG_WPTR, 0, 7, 0x3f8, (1<<15), Font16x21N};
 #endif
 #ifdef LCDFONT_INCLUDE_FONT_16x26
-FontDef Font_16x26 = {16, 26, 32, 127, FONT_FLAG_WPTR, 0, 5, 0x1f0, (1<<15), Font16x26};
+const FontDef Font_16x26 = {16, 26, 32, 127, FONT_FLAG_WPTR, 0, 5, 0x1f0, (1<<15), Font16x26};
 #endif
 #ifdef LCDFONT_INCLUDE_FONT_16x32
-FontDef Font_16x32 = {16, 32, 32, 127, FONT_FLAG_WPTR, 0, 5, 0x3e00, (1<<15), (const uint16_t*)Font16x32};
+const FontDef Font_16x32 = {16, 32, 32, 127, FONT_FLAG_WPTR, 0, 5, 0x3e00, (1<<15), (const uint16_t*)Font16x32};
 #endif
